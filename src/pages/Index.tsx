@@ -1,13 +1,29 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
+import { MobileNav } from "@/components/layout/MobileNav";
+import { SearchBar } from "@/components/SearchBar";
+import { GreetingSection } from "@/components/GreetingSection";
+import { QuickAccess } from "@/components/QuickAccess";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gray-50">
+        <AppSidebar />
+        <main className="flex-1 p-6 pb-20 md:pb-6">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center justify-between mb-8">
+              <SidebarTrigger className="md:hidden" />
+              <SearchBar />
+            </div>
+            <GreetingSection />
+            <h2 className="text-xl font-semibold mb-4">Quick Access</h2>
+            <QuickAccess />
+          </div>
+        </main>
+        <MobileNav />
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
