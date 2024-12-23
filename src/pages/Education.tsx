@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { Navbar } from "@/components/layout/Navbar";
 import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BookOpen, Video, Calculator } from "lucide-react";
+import { BookOpen, Video, Calculator, Search, Play, ArrowRight } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 
 const articles = [
@@ -11,22 +14,72 @@ const articles = [
     category: "Nutrition",
     readTime: "5 min read",
     image: "https://source.unsplash.com/random/400x300?healthy+food",
+    author: "Dr. Sarah Johnson",
+    date: "March 15, 2024",
   },
   {
     title: "Beginner's Guide to Exercise",
     category: "Exercise",
     readTime: "8 min read",
     image: "https://source.unsplash.com/random/400x300?exercise",
+    author: "Mike Thompson",
+    date: "March 14, 2024",
   },
   {
     title: "Mental Health Awareness",
     category: "Mental Health",
     readTime: "6 min read",
     image: "https://source.unsplash.com/random/400x300?meditation",
+    author: "Dr. Emily Chen",
+    date: "March 13, 2024",
+  },
+];
+
+const videos = [
+  {
+    title: "30-Minute Home Workout",
+    duration: "30:15",
+    thumbnail: "https://source.unsplash.com/random/400x300?workout",
+    instructor: "Alex Fitness",
+    views: "15K",
+  },
+  {
+    title: "Healthy Meal Prep Basics",
+    duration: "15:45",
+    thumbnail: "https://source.unsplash.com/random/400x300?meal-prep",
+    instructor: "Chef Maria",
+    views: "12K",
+  },
+  {
+    title: "Stress Management Techniques",
+    duration: "20:30",
+    thumbnail: "https://source.unsplash.com/random/400x300?stress-relief",
+    instructor: "Dr. James Wilson",
+    views: "18K",
+  },
+];
+
+const tools = [
+  {
+    name: "BMI Calculator",
+    description: "Calculate your Body Mass Index",
+    icon: Calculator,
+  },
+  {
+    name: "Calorie Counter",
+    description: "Track your daily calorie intake",
+    icon: Calculator,
+  },
+  {
+    name: "Sleep Tracker",
+    description: "Monitor your sleep patterns",
+    icon: Calculator,
   },
 ];
 
 export default function Education() {
+  const [searchQuery, setSearchQuery] = useState("");
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
@@ -37,6 +90,16 @@ export default function Education() {
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-8">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Input
+              className="pl-10"
+              placeholder="Search articles, videos, and tools..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
           <Tabs defaultValue="articles" className="w-full">
             <TabsList className="grid w-full grid-cols-3 lg:w-[400px]">
               <TabsTrigger value="articles">Articles</TabsTrigger>
@@ -47,20 +110,27 @@ export default function Education() {
             <TabsContent value="articles" className="mt-6">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {articles.map((article) => (
-                  <Card key={article.title} className="overflow-hidden">
-                    <img
-                      src={article.image}
-                      alt={article.title}
-                      className="w-full h-48 object-cover"
-                    />
+                  <Card key={article.title} className="overflow-hidden group">
+                    <div className="relative">
+                      <img
+                        src={article.image}
+                        alt={article.title}
+                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-2 right-2 bg-white px-2 py-1 rounded text-sm">
+                        {article.readTime}
+                      </div>
+                    </div>
                     <div className="p-4">
                       <div className="text-sm text-primary font-medium">
                         {article.category}
                       </div>
-                      <h3 className="font-semibold mt-2">{article.title}</h3>
-                      <div className="flex items-center mt-4 text-sm text-gray-500">
-                        <BookOpen className="w-4 h-4 mr-1" />
-                        {article.readTime}
+                      <h3 className="font-semibold mt-2 group-hover:text-primary transition-colors">
+                        {article.title}
+                      </h3>
+                      <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
+                        <span>{article.author}</span>
+                        <span>{article.date}</span>
                       </div>
                     </div>
                   </Card>
@@ -70,13 +140,30 @@ export default function Education() {
 
             <TabsContent value="videos" className="mt-6">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[1, 2, 3].map((i) => (
-                  <Card key={i} className="p-4">
-                    <div className="aspect-video bg-gray-100 rounded-lg flex items-center justify-center">
-                      <Video className="w-8 h-8 text-gray-400" />
+                {videos.map((video) => (
+                  <Card key={video.title} className="overflow-hidden group">
+                    <div className="relative">
+                      <img
+                        src={video.thumbnail}
+                        alt={video.title}
+                        className="w-full h-48 object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Play className="w-12 h-12 text-white" />
+                      </div>
+                      <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
+                        {video.duration}
+                      </div>
                     </div>
-                    <h3 className="font-semibold mt-4">Video Title {i}</h3>
-                    <p className="text-sm text-gray-500 mt-2">10:30 mins</p>
+                    <div className="p-4">
+                      <h3 className="font-semibold group-hover:text-primary transition-colors">
+                        {video.title}
+                      </h3>
+                      <div className="flex items-center justify-between mt-4 text-sm text-gray-500">
+                        <span>{video.instructor}</span>
+                        <span>{video.views} views</span>
+                      </div>
+                    </div>
                   </Card>
                 ))}
               </div>
@@ -84,21 +171,21 @@ export default function Education() {
 
             <TabsContent value="tools" className="mt-6">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {[
-                  "BMI Calculator",
-                  "Calorie Counter",
-                  "Sleep Tracker",
-                ].map((tool) => (
-                  <Card key={tool} className="p-6">
+                {tools.map((tool) => (
+                  <Card key={tool.name} className="p-6 hover:shadow-lg transition-shadow group">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-primary/10 rounded-lg">
-                        <Calculator className="w-6 h-6 text-primary" />
+                      <div className="p-3 bg-primary/10 rounded-lg group-hover:scale-110 transition-transform">
+                        <tool.icon className="w-6 h-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold">{tool}</h3>
-                        <p className="text-sm text-gray-500">Track your progress</p>
+                        <h3 className="font-semibold">{tool.name}</h3>
+                        <p className="text-sm text-gray-500">{tool.description}</p>
                       </div>
                     </div>
+                    <Button className="w-full mt-4">
+                      Launch Tool
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
                   </Card>
                 ))}
               </div>
