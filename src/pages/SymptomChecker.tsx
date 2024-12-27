@@ -20,22 +20,24 @@ export default function SymptomChecker() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
-      <PageHeader
-        title="Symptom Checker"
-        subtitle="AI-powered insights to help you understand your health better."
-      />
-      
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-2xl mx-auto">
-          <Card className="p-6">
-            {!analysisData ? (
-              <SymptomForm onAnalyze={handleAnalyze} />
-            ) : (
-              <AnalysisResults data={analysisData} onReset={handleReset} />
-            )}
-          </Card>
-        </div>
-      </main>
+      <div className="mt-16"> {/* Added margin-top here */}
+        <PageHeader
+          title="Symptom Checker"
+          subtitle="AI-powered insights to help you understand your health better."
+        />
+        
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <div className="max-w-2xl mx-auto">
+            <Card className="p-6">
+              {!analysisData ? (
+                <SymptomForm onAnalyze={handleAnalyze} />
+              ) : (
+                <AnalysisResults data={analysisData} onReset={handleReset} />
+              )}
+            </Card>
+          </div>
+        </main>
+      </div>
       <Footer />
     </div>
   );
