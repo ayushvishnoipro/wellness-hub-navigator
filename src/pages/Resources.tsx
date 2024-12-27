@@ -160,8 +160,8 @@ export default function Resources() {
               </div>
             </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
       <Footer />
     </div>
   );
