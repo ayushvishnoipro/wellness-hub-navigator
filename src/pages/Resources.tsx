@@ -65,13 +65,13 @@ export default function Resources() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
-      <PageHeader
-        title="Resource Locator"
-        subtitle="Find health services near you."
-      />
-      
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto space-y-8">
+      <div className="mt-16">
+        <PageHeader
+          title="Resource Locator"
+          subtitle="Find health services near you."
+        />
+        
+        <main className="flex-1 container mx-auto px-4 py-8">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />

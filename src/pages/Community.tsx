@@ -56,12 +56,13 @@ export default function Community() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
-      <PageHeader
-        title="Community Support"
-        subtitle="Connect, share, and learn with a supportive community."
-      />
-      
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <div className="mt-16">
+        <PageHeader
+          title="Community Support"
+          subtitle="Connect, share, and learn with a supportive community."
+        />
+        
+        <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-8">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -164,7 +165,8 @@ export default function Community() {
             </TabsContent>
           </Tabs>
         </div>
-      </main>
+        </main>
+      </div>
       <Footer />
     </div>
   );

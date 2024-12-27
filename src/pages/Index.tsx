@@ -12,7 +12,7 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar />
-      <main className="flex-1">
+      <div className="mt-16">
         <div className="flex items-center justify-center p-6 bg-white border-b">
           <SearchBar />
         </div>
@@ -25,7 +25,7 @@ const Index = () => {
           <PricingSection />
           <FAQSection />
         </div>
-      </main>
+      </div>
       <Footer />
     </div>
   );
