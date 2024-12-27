@@ -4,8 +4,8 @@ import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
-import { MapPin, Phone, Clock, Star, Search, Filter } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MapPin, Phone, Clock, Star, Search } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
 
 const resources = [
@@ -83,15 +83,17 @@ export default function Resources() {
               />
             </div>
             <div className="w-full md:w-48">
-              <Select
-                value={selectedFilter}
-                onChange={(e) => setSelectedFilter(e.target.value)}
-              >
-                {filterOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
+              <Select value={selectedFilter} onValueChange={setSelectedFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select filter" />
+                </SelectTrigger>
+                <SelectContent>
+                  {filterOptions.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
           </div>
@@ -155,7 +157,6 @@ export default function Resources() {
             <div className="bg-gray-200 rounded-lg min-h-[600px] lg:sticky lg:top-20">
               <div className="h-full flex items-center justify-center text-gray-500">
                 Interactive Map
-                {/* Map integration would go here */}
               </div>
             </div>
           </div>
