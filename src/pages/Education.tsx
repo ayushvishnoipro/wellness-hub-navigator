@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BookOpen, Video, Calculator, Search, Play, ArrowRight } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
+import { BMICalculator } from "@/components/tools/BMICalculator";
+import { CalorieCounter } from "@/components/tools/CalorieCounter";
+import { SleepTracker } from "@/components/tools/SleepTracker";
 
 const articles = [
   {
@@ -63,17 +66,17 @@ const tools = [
   {
     name: "BMI Calculator",
     description: "Calculate your Body Mass Index",
-    icon: Calculator,
+    component: BMICalculator,
   },
   {
     name: "Calorie Counter",
     description: "Track your daily calorie intake",
-    icon: Calculator,
+    component: CalorieCounter,
   },
   {
     name: "Sleep Tracker",
     description: "Monitor your sleep patterns",
-    icon: Calculator,
+    component: SleepTracker,
   },
 ];
 
@@ -172,21 +175,7 @@ export default function Education() {
             <TabsContent value="tools" className="mt-6">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tools.map((tool) => (
-                  <Card key={tool.name} className="p-6 hover:shadow-lg transition-shadow group">
-                    <div className="flex items-center gap-4">
-                      <div className="p-3 bg-primary/10 rounded-lg group-hover:scale-110 transition-transform">
-                        <tool.icon className="w-6 h-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">{tool.name}</h3>
-                        <p className="text-sm text-gray-500">{tool.description}</p>
-                      </div>
-                    </div>
-                    <Button className="w-full mt-4">
-                      Launch Tool
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Card>
+                  <tool.component key={tool.name} />
                 ))}
               </div>
             </TabsContent>
