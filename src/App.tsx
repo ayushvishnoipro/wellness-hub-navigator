@@ -9,6 +9,7 @@ import Community from "./pages/Community";
 import Resources from "./pages/Resources";
 import Education from "./pages/Education";
 import Notifications from "./pages/Notifications";
+import MedicalBot from "./pages/MedicalBot";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/resources" element={<Resources />} />
           <Route path="/education" element={<Education />} />
           <Route path="/notifications" element={<Notifications />} />
+          <Route path="/medical-bot" element={<MedicalBot />} />
         </Routes>
       </BrowserRouter>
       <Toaster />

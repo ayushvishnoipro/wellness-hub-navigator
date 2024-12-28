@@ -1,4 +1,4 @@
-import { Heart, MessageSquare, MapPin, BookOpen, Bell } from "lucide-react";
+import { Heart, MessageSquare, MapPin, BookOpen, Bell, Bot } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 const features = [
@@ -31,6 +31,13 @@ const features = [
     title: "Smart Notifications",
     description: "Stay on top of your health with personalized reminders and alerts.",
     color: "text-yellow-500",
+  },
+  {
+    icon: Bot,
+    title: "Medical Bot",
+    description: "Get instant health guidance and support through our AI-powered medical assistant.",
+    color: "text-cyan-500",
+    url: "/medical-bot"
   },
 ];
 
