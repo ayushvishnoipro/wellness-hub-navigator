@@ -1,4 +1,4 @@
-import { Activity, Heart, MapPin, MessageSquare, Bell, BookOpen } from "lucide-react";
+import { Activity, Heart, MapPin, MessageSquare, Bell, BookOpen, Bot } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -8,6 +8,7 @@ const navItems = [
   { title: "Resources", icon: MapPin, url: "/resources" },
   { title: "Learn", icon: BookOpen, url: "/education" },
   { title: "Alerts", icon: Bell, url: "/notifications" },
+  { title: "Bot", icon: Bot, url: "/medical-bot" },
 ];
 
 export function MobileNav() {
