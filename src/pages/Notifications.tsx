@@ -4,11 +4,32 @@ import { PageHeader } from "@/components/PageHeader";
 import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
-import { Bell, Calendar, Clock, Pill, Check, X } from "lucide-react";
+import { Bell, Calendar, Clock, Pill, Check, X, Plus } from "lucide-react";
 import { Footer } from "@/components/layout/Footer";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
 
-const notifications = [
+interface Notification {
+  id: string;
+  title: string;
+  description: string;
+  time: string;
+  icon: any;
+  active: boolean;
+  type: string;
+}
+
+interface Preference {
+  name: string;
+  description: string;
+  enabled: boolean;
+}
+
+const initialNotifications: Notification[] = [
   {
+    id: "1",
     title: "Medication Reminder",
     description: "Take vitamin D supplement",
     time: "Daily at 9:00 AM",
@@ -17,6 +38,7 @@ const notifications = [
     type: "medication",
   },
   {
+    id: "2",
     title: "Appointment",
     description: "Annual check-up with Dr. Smith",
     time: "March 15, 2024 at 2:30 PM",
@@ -25,6 +47,7 @@ const notifications = [
     type: "appointment",
   },
   {
+    id: "3",
     title: "Exercise Reminder",
     description: "30 minutes of cardio",
     time: "Every Monday, Wednesday, Friday at 6:00 PM",
@@ -34,7 +57,7 @@ const notifications = [
   },
 ];
 
-const preferences = [
+const preferences: Preference[] = [
   { name: "Email Notifications", description: "Receive updates via email", enabled: true },
   { name: "SMS Notifications", description: "Get text message alerts", enabled: false },
   { name: "Push Notifications", description: "Browser notifications", enabled: true },
@@ -42,19 +65,95 @@ const preferences = [
 ];
 
 export default function Notifications() {
-  const [notificationsList, setNotificationsList] = useState(notifications);
-  const [userPreferences, setUserPreferences] = useState(preferences);
+  const [notificationsList, setNotificationsList] = useState<Notification[]>(initialNotifications);
+  const [userPreferences, setUserPreferences] = useState<Preference[]>(preferences);
+  const [isAddingReminder, setIsAddingReminder] = useState(false);
+  const [newReminder, setNewReminder] = useState({
+    title: "",
+    description: "",
+    type: "medication",
+    time: "",
+  });
+  const { toast } = useToast();
 
-  const toggleNotification = (index: number) => {
-    const updatedNotifications = [...notificationsList];
-    updatedNotifications[index].active = !updatedNotifications[index].active;
-    setNotificationsList(updatedNotifications);
+  const toggleNotification = (id: string) => {
+    setNotificationsList((prev) =>
+      prev.map((notification) =>
+        notification.id === id
+          ? { ...notification, active: !notification.active }
+          : notification
+      )
+    );
+    toast({
+      title: "Notification Updated",
+      description: "Your notification preferences have been saved.",
+    });
   };
 
   const togglePreference = (index: number) => {
     const updatedPreferences = [...userPreferences];
     updatedPreferences[index].enabled = !updatedPreferences[index].enabled;
     setUserPreferences(updatedPreferences);
+    toast({
+      title: "Preferences Updated",
+      description: "Your notification preferences have been saved.",
+    });
+  };
+
+  const handleAddReminder = () => {
+    if (!newReminder.title || !newReminder.description || !newReminder.time) {
+      toast({
+        title: "Error",
+        description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const iconMap: { [key: string]: any } = {
+      medication: Pill,
+      appointment: Calendar,
+      exercise: Clock,
+    };
+
+    const newNotification: Notification = {
+      id: Date.now().toString(),
+      title: newReminder.title,
+      description: newReminder.description,
+      time: newReminder.time,
+      icon: iconMap[newReminder.type] || Bell,
+      active: true,
+      type: newReminder.type,
+    };
+
+    setNotificationsList((prev) => [newNotification, ...prev]);
+    setNewReminder({ title: "", description: "", type: "medication", time: "" });
+    setIsAddingReminder(false);
+    toast({
+      title: "Reminder Added",
+      description: "Your new reminder has been created successfully.",
+    });
+  };
+
+  const handleMarkAsDone = (id: string) => {
+    setNotificationsList((prev) =>
+      prev.map((notification) =>
+        notification.id === id
+          ? { ...notification, active: false }
+          : notification
+      )
+    );
+    toast({
+      title: "Marked as Done",
+      description: "The reminder has been marked as completed.",
+    });
+  };
+
+  const handleSnooze = (id: string) => {
+    toast({
+      title: "Reminder Snoozed",
+      description: "This reminder will notify you again in 1 hour.",
+    });
   };
 
   return (
@@ -88,8 +187,8 @@ export default function Notifications() {
 
             <div className="space-y-4">
               <h2 className="text-lg font-semibold">Active Reminders</h2>
-              {notificationsList.map((notification, index) => (
-                <Card key={notification.title} className="p-6">
+              {notificationsList.map((notification) => (
+                <Card key={notification.id} className="p-6">
                   <div className="flex items-start justify-between">
                     <div className="flex gap-4">
                       <div className="p-2 bg-primary/10 rounded-lg">
@@ -107,16 +206,26 @@ export default function Notifications() {
                     </div>
                     <Switch
                       checked={notification.active}
-                      onCheckedChange={() => toggleNotification(index)}
+                      onCheckedChange={() => toggleNotification(notification.id)}
                     />
                   </div>
                   {notification.active && (
                     <div className="mt-4 pt-4 border-t flex gap-3">
-                      <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex items-center gap-2"
+                        onClick={() => handleMarkAsDone(notification.id)}
+                      >
                         <Check className="w-4 h-4" />
                         Mark as Done
                       </Button>
-                      <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex items-center gap-2"
+                        onClick={() => handleSnooze(notification.id)}
+                      >
                         <X className="w-4 h-4" />
                         Snooze
                       </Button>
@@ -126,22 +235,74 @@ export default function Notifications() {
               ))}
             </div>
 
-            <Card className="p-6 bg-primary/5 border-primary/20">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-primary/10 rounded-full">
-                  <Bell className="w-6 h-6 text-primary" />
+            <Dialog open={isAddingReminder} onOpenChange={setIsAddingReminder}>
+              <DialogTrigger asChild>
+                <Card className="p-6 bg-primary/5 border-primary/20 cursor-pointer hover:bg-primary/10 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-primary/10 rounded-full">
+                      <Plus className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium">Want more reminders?</h3>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Set up custom notifications for your specific health goals.
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add New Reminder</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 mt-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Title</label>
+                    <Input
+                      value={newReminder.title}
+                      onChange={(e) => setNewReminder({ ...newReminder, title: e.target.value })}
+                      placeholder="Enter reminder title"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Description</label>
+                    <Input
+                      value={newReminder.description}
+                      onChange={(e) => setNewReminder({ ...newReminder, description: e.target.value })}
+                      placeholder="Enter reminder description"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Type</label>
+                    <Select
+                      value={newReminder.type}
+                      onValueChange={(value) => setNewReminder({ ...newReminder, type: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select reminder type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="medication">Medication</SelectItem>
+                        <SelectItem value="appointment">Appointment</SelectItem>
+                        <SelectItem value="exercise">Exercise</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Time</label>
+                    <Input
+                      type="text"
+                      value={newReminder.time}
+                      onChange={(e) => setNewReminder({ ...newReminder, time: e.target.value })}
+                      placeholder="e.g., Daily at 9:00 AM"
+                    />
+                  </div>
+                  <Button className="w-full" onClick={handleAddReminder}>
+                    Add Reminder
+                  </Button>
                 </div>
-                <div>
-                  <h3 className="font-medium">Want more reminders?</h3>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Set up custom notifications for your specific health goals.
-                  </p>
-                </div>
-                <Button className="ml-auto">
-                  Add Reminder
-                </Button>
-              </div>
-            </Card>
+              </DialogContent>
+            </Dialog>
           </div>
         </main>
       </div>
