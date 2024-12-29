@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bot, Send, AlertTriangle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/components/ui/use-toast";
-import { getGeminiResponse } from "@/lib/gemini";
+import { getGeminiResponse, initializeGemini } from "@/lib/gemini";
 
 interface Message {
   type: 'user' | 'bot';
@@ -24,7 +24,25 @@ export function MedicalChatbot() {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(true);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const init = async () => {
+      try {
+        await initializeGemini();
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to initialize Gemini AI. Please try again later.",
+        });
+      } finally {
+        setIsInitializing(false);
+      }
+    };
+    init();
+  }, [toast]);
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
@@ -76,6 +94,17 @@ export function MedicalChatbot() {
       setIsTyping(false);
     }
   };
+
+  if (isInitializing) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto shadow-lg p-8">
+        <div className="flex flex-col items-center justify-center space-y-4">
+          <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          <p className="text-lg">Initializing AI Assistant...</p>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-lg">

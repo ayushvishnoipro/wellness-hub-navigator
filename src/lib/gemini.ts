@@ -1,15 +1,27 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { supabase } from "@/integrations/supabase/client";
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+const getGeminiKey = async () => {
+  const { data: { GEMINI_API_KEY } } = await supabase.functions.invoke('get-gemini-key');
+  if (!GEMINI_API_KEY) {
+    throw new Error("Missing Gemini API key");
+  }
+  return GEMINI_API_KEY;
+};
 
-if (!GEMINI_API_KEY) {
-  console.warn("Missing Gemini API key. Chat functionality will be limited.");
-}
+let genAI: GoogleGenerativeAI;
 
-export const genAI = new GoogleGenerativeAI(GEMINI_API_KEY || "");
+export const initializeGemini = async () => {
+  const apiKey = await getGeminiKey();
+  genAI = new GoogleGenerativeAI(apiKey);
+};
 
 export const getGeminiResponse = async (prompt: string): Promise<string> => {
   try {
+    if (!genAI) {
+      await initializeGemini();
+    }
+    
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     
     const result = await model.generateContent(`You are a medical AI assistant. 
