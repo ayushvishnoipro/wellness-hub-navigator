@@ -3,15 +3,30 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Bot, Send, AlertTriangle, Loader2 } from "lucide-react";
+import { Bot, Send, AlertTriangle, Loader2, History } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/components/ui/use-toast";
 import { getGeminiResponse, initializeGemini } from "@/lib/gemini";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface Message {
   type: 'user' | 'bot';
   content: string;
   timestamp: Date;
+}
+
+interface ChatHistory {
+  id: string;
+  message: string;
+  response: string;
+  created_at: string;
 }
 
 const INITIAL_MESSAGE: Message = {
@@ -25,17 +40,19 @@ export function MedicalChatbot() {
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
+  const [chatHistory, setChatHistory] = useState<ChatHistory[]>([]);
   const { toast } = useToast();
 
   useEffect(() => {
     const init = async () => {
       try {
         await initializeGemini();
+        await loadChatHistory();
       } catch (error) {
         toast({
           variant: "destructive",
           title: "Error",
-          description: "Failed to initialize Gemini AI. Please try again later.",
+          description: "Failed to initialize. Please try again later.",
         });
       } finally {
         setIsInitializing(false);
@@ -43,6 +60,25 @@ export function MedicalChatbot() {
     };
     init();
   }, [toast]);
+
+  const loadChatHistory = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('chat_history')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setChatHistory(data || []);
+    } catch (error) {
+      console.error('Error loading chat history:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load chat history.",
+      });
+    }
+  };
 
   const handleSendMessage = async () => {
     if (!input.trim()) return;
@@ -68,7 +104,20 @@ export function MedicalChatbot() {
       
       setMessages(prev => [...prev, botResponse]);
 
-      // Check for emergency keywords in the response
+      // Store in database
+      const { error } = await supabase
+        .from('chat_history')
+        .insert({
+          message: input,
+          response: response
+        });
+
+      if (error) throw error;
+
+      // Reload chat history
+      await loadChatHistory();
+
+      // Check for emergency keywords
       const emergencyKeywords = ['emergency', 'immediate medical attention', '911', 'urgent care'];
       if (emergencyKeywords.some(keyword => response.toLowerCase().includes(keyword))) {
         toast({
@@ -95,6 +144,14 @@ export function MedicalChatbot() {
     }
   };
 
+  const loadPreviousChat = (history: ChatHistory) => {
+    setMessages([
+      INITIAL_MESSAGE,
+      { type: 'user', content: history.message, timestamp: new Date(history.created_at) },
+      { type: 'bot', content: history.response, timestamp: new Date(history.created_at) }
+    ]);
+  };
+
   if (isInitializing) {
     return (
       <Card className="w-full max-w-2xl mx-auto shadow-lg p-8">
@@ -108,11 +165,39 @@ export function MedicalChatbot() {
 
   return (
     <Card className="w-full max-w-2xl mx-auto shadow-lg">
-      <div className="p-4 border-b">
+      <div className="p-4 border-b flex justify-between items-center">
         <div className="flex items-center gap-2">
           <Bot className="w-5 h-5 text-primary" />
           <h2 className="text-lg font-semibold">Medical Assistant (Powered by Gemini)</h2>
         </div>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon">
+              <History className="h-4 w-4" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>Chat History</SheetTitle>
+            </SheetHeader>
+            <ScrollArea className="h-[calc(100vh-100px)] mt-4">
+              <div className="space-y-4">
+                {chatHistory.map((chat) => (
+                  <Card
+                    key={chat.id}
+                    className="p-4 cursor-pointer hover:bg-gray-50"
+                    onClick={() => loadPreviousChat(chat)}
+                  >
+                    <p className="font-medium truncate">{chat.message}</p>
+                    <p className="text-sm text-gray-500 mt-1">
+                      {new Date(chat.created_at).toLocaleString()}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
       </div>
 
       <Alert variant="destructive" className="m-4">
