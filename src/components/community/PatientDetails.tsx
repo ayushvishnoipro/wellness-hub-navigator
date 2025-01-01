@@ -8,7 +8,8 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Calendar, Heart, LineChart, Pill, Users } from "lucide-react";
+import { Activity, Calendar, Heart, LineChart, Pill, Users, ClipboardList } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PatientDetailsProps {
   patient: {
@@ -18,6 +19,12 @@ interface PatientDetailsProps {
     progress: string;
     avatar: string;
     communities: number;
+    medicalHistory: {
+      date: string;
+      condition: string;
+      notes: string;
+      doctor: string;
+    }[];
   };
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -98,6 +105,32 @@ export function PatientDetails({ patient, open, onOpenChange }: PatientDetailsPr
               </CardContent>
             </Card>
           </div>
+
+          {/* Medical History Section */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Medical History</CardTitle>
+              <ClipboardList className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[200px] pr-4">
+                <div className="space-y-4">
+                  {patient.medicalHistory.map((record, index) => (
+                    <div key={index} className="border-b pb-3 last:border-0">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h4 className="font-medium">{record.condition}</h4>
+                          <p className="text-sm text-muted-foreground">{record.notes}</p>
+                        </div>
+                        <Badge variant="outline">{new Date(record.date).toLocaleDateString()}</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">Attending: {record.doctor}</p>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
+            </CardContent>
+          </Card>
 
           {/* Additional Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

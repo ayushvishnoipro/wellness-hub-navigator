@@ -13,6 +13,26 @@ const patients = [
     progress: "Good",
     avatar: "/placeholder.svg",
     communities: 3,
+    medicalHistory: [
+      {
+        date: "2023-10-15",
+        condition: "Hypertension Diagnosis",
+        notes: "Prescribed ACE inhibitors",
+        doctor: "Dr. Smith"
+      },
+      {
+        date: "2023-08-20",
+        condition: "Annual Physical",
+        notes: "All vitals normal, recommended lifestyle changes",
+        doctor: "Dr. Williams"
+      },
+      {
+        date: "2023-05-10",
+        condition: "Diabetes Type 2 Diagnosis",
+        notes: "Started on Metformin",
+        doctor: "Dr. Smith"
+      }
+    ]
   },
   {
     name: "Michael Chen",
@@ -21,6 +41,20 @@ const patients = [
     progress: "Stable",
     avatar: "/placeholder.svg",
     communities: 5,
+    medicalHistory: [
+      {
+        date: "2023-11-01",
+        condition: "Hypertension Follow-up",
+        notes: "Blood pressure stabilized",
+        doctor: "Dr. Johnson"
+      },
+      {
+        date: "2023-09-15",
+        condition: "Hypertension Diagnosis",
+        notes: "Started on beta blockers",
+        doctor: "Dr. Johnson"
+      }
+    ]
   },
   {
     name: "Emma Wilson",
@@ -29,6 +63,20 @@ const patients = [
     progress: "Improving",
     avatar: "/placeholder.svg",
     communities: 2,
+    medicalHistory: [
+      {
+        date: "2023-12-01",
+        condition: "Asthma Review",
+        notes: "Inhaler technique improved",
+        doctor: "Dr. Brown"
+      },
+      {
+        date: "2023-07-20",
+        condition: "Asthma Diagnosis",
+        notes: "Prescribed daily inhaler",
+        doctor: "Dr. Brown"
+      }
+    ]
   },
   {
     name: "David Brown",
@@ -37,6 +85,20 @@ const patients = [
     progress: "Stable",
     avatar: "/placeholder.svg",
     communities: 4,
+    medicalHistory: [
+      {
+        date: "2023-11-15",
+        condition: "Arthritis Follow-up",
+        notes: "Joint pain reduced with current medication",
+        doctor: "Dr. Martinez"
+      },
+      {
+        date: "2023-06-10",
+        condition: "Arthritis Diagnosis",
+        notes: "Started on anti-inflammatory medication",
+        doctor: "Dr. Martinez"
+      }
+    ]
   },
 ];
 
