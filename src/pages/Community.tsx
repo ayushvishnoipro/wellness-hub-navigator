@@ -1,10 +1,10 @@
 import { PageHeader } from "@/components/PageHeader";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { MemberDashboard } from "@/components/community/MemberDashboard";
-import { HealthMetrics } from "@/components/community/HealthMetrics";
-import { ActivityLog } from "@/components/community/ActivityLog";
-import { CommunityFeatures } from "@/components/community/CommunityFeatures";
+import { SearchBar } from "@/components/SearchBar";
+import { PatientDashboards } from "@/components/community/PatientDashboards";
+import { CommunityList } from "@/components/community/CommunityList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function Community() {
   return (
@@ -16,18 +16,22 @@ export default function Community() {
       />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-3">
-            <MemberDashboard />
-          </div>
-          <div className="lg:col-span-6">
-            <HealthMetrics />
-            <ActivityLog />
-          </div>
-          <div className="lg:col-span-3">
-            <CommunityFeatures />
-          </div>
-        </div>
+        <SearchBar />
+        
+        <Tabs defaultValue="dashboards" className="mt-8">
+          <TabsList className="grid w-full grid-cols-2 max-w-[400px] mx-auto">
+            <TabsTrigger value="dashboards">Patient Dashboards</TabsTrigger>
+            <TabsTrigger value="communities">Communities</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="dashboards" className="mt-6">
+            <PatientDashboards />
+          </TabsContent>
+          
+          <TabsContent value="communities" className="mt-6">
+            <CommunityList />
+          </TabsContent>
+        </Tabs>
       </main>
       
       <Footer />
