@@ -8,7 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Activity, Calendar, Heart, LineChart, Pills, Users } from "lucide-react";
+import { Activity, Calendar, Heart, LineChart, Pill, Users } from "lucide-react";
 
 interface PatientDetailsProps {
   patient: {
@@ -49,7 +49,7 @@ export function PatientDetails({ patient, open, onOpenChange }: PatientDetailsPr
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Condition Status</CardTitle>
-                <Pills className="h-4 w-4 text-muted-foreground" />
+                <Pill className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
